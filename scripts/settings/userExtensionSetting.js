@@ -612,6 +612,47 @@ export function renderSetting() {
  * 加载设置
  */
 export function loadSettings() {
+    // --- BEGIN IMPLEMENTATION ---
+
+    // **Defensive Check and Migration Block**
+    // Goal: Ensure critical settings exist and have a default value if missing.
+
+    // 1. Access the user's current settings object.
+    let currentUserSettings = USER.tableBaseSetting; // Corrected: Use tableBaseSetting for direct access
+
+    // 2. Access the plugin's default settings definition.
+    let defaultPluginSettings = USER.tableBaseDefaultSettings;
+
+    // 3. Define a list of critical settings to verify.
+    const settingsToVerify = [
+        'enableMapIntegration'
+    ];
+
+    let settingsModified = false;
+
+    // 4. Iterate through the list of critical settings.
+    for (const settingKey of settingsToVerify) {
+        // 5. Check if the setting is missing from the user's current configuration.
+        if (!currentUserSettings.hasOwnProperty(settingKey)) {
+            
+            // 6. If missing, retrieve the default value from the default settings.
+            const defaultValue = defaultPluginSettings[settingKey];
+
+            // 7. Log a debug message.
+            console.log(`[T-TABLE::Setting Migration] Key "${settingKey}" not found. Initializing with default value: ${defaultValue}`);
+
+            // 8. Assign the default value to the user's current settings object.
+            currentUserSettings[settingKey] = defaultValue;
+            settingsModified = true;
+        }
+    }
+
+    // 9. If any settings were modified, explicitly save them.
+    if (settingsModified) {
+        USER.saveSettings();
+    }
+
+    // --- END IMPLEMENTATION ---
     USER.IMPORTANT_USER_PRIVACY_DATA = USER.IMPORTANT_USER_PRIVACY_DATA || {};
 
     // 旧版本提示词变更兼容
