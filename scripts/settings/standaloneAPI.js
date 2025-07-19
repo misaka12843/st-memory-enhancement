@@ -5,12 +5,14 @@ import {PopupConfirm} from "../../components/popupConfirm.js";
 
 // @ts-ignore
 let ChatCompletionService = undefined;
-try {
-    // 动态导入，兼容模块不存在的情况
-    const module = await import('/scripts/custom-request.js');
-    ChatCompletionService = module.ChatCompletionService;
-} catch (e) {
-    console.warn("未检测到 /scripts/custom-request.js 或未正确导出 ChatCompletionService，将禁用代理相关功能。", e);
+export async function initialize() {
+    try {
+        // 动态导入，兼容模块不存在的情况
+        const module = await import('/scripts/custom-request.js');
+        ChatCompletionService = module.ChatCompletionService;
+    } catch (e) {
+        console.warn("未检测到 /scripts/custom-request.js 或未正确导出 ChatCompletionService，将禁用代理相关功能。", e);
+    }
 }
 
 let loadingToast = null;

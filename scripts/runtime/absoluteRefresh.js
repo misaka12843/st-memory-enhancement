@@ -11,6 +11,51 @@ import { refreshContextView } from "../editor/chatSheetsDataView.js";
 import { Form } from '../../components/formManager.js';
 import {refreshRebuildTemplate} from "../settings/userExtensionSetting.js"
 
+/**
+ * 处理与地图插件的直接联动
+ * @description 检查是否启用联动，如果启用，则获取最新表格数据并调用地图插件的API。
+ */
+export function handleMapDirectIntegration() {
+    // 1. 检查功能是否开启
+    if (!USER.tableBaseSetting.enableMapIntegration) {
+        return; // 如果未启用，则直接返回
+    }
+
+    console.log('[Memory Enhancement] Map direct integration is enabled. Attempting to update map.');
+
+    try {
+        // 2. 查找地图插件的 iframe
+        const mapIframe = document.querySelector('iframe[data-plugin-id="map"]');
+        if (!mapIframe) {
+            console.warn('[Memory Enhancement] Map plugin iframe not found. Skipping direct update.');
+            return;
+        }
+
+        // 3. 获取最新的表格数据
+        // DERIVED.any.waitingTable 包含了当前已更新的表格数据
+        const latestTables = DERIVED.any.waitingTable;
+        if (!latestTables || latestTables.length === 0) {
+            console.log('[Memory Enhancement] No table data to push to map.');
+            return;
+        }
+
+        // 4. 调用地图插件的 API
+        const mapWindow = mapIframe.contentWindow;
+        if (mapWindow && typeof mapWindow.MapApp?.update === 'function') {
+            // 将数据转换为地图插件需要的格式（如果需要）
+            // 根据规范，我们直接传递整个表格数据
+            mapWindow.MapApp.update(latestTables);
+            console.log('[Memory Enhancement] Successfully pushed data to map plugin.');
+            EDITOR.success('地图数据已同步更新');
+        } else {
+            console.warn('[Memory Enhancement] Map plugin API (window.MapApp.update) not found or not a function.');
+        }
+    } catch (error) {
+        console.error('[Memory Enhancement] Error during map direct integration:', error);
+        EDITOR.error('与地图插件联动时发生错误，请检查控制台日志。');
+    }
+}
+
 // 在解析响应后添加验证
 function validateActions(actions) {
     if (!Array.isArray(actions)) {
@@ -685,6 +730,9 @@ export async function refreshTableActions(force = false, silentUpdate = false, c
         if (USER.tableBaseSetting.bool_ignore_del) {
             EDITOR.success('删除保护启用，已忽略了删除操作（可在插件设置中修改）');
         }
+
+        // 在保存前执行地图联动
+        handleMapDirectIntegration();
 
         // 更新聊天数据
         chat = USER.getContext().chat[USER.getContext().chat.length - 1];
@@ -1663,6 +1711,10 @@ export async function executeIncrementalUpdateFromSummary(
             EDITOR.error("执行表格操作指令时出错: " , e.message, e);
             console.error("错误原文: ", matches.join('\n'));
         }
+        
+        // 在保存前执行地图联动
+        handleMapDirectIntegration();
+
         USER.saveChat()
         refreshContextView();
         updateSystemMessageTableStatus();
