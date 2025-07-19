@@ -108,6 +108,7 @@ export async function filterTableDataPopup(originalData, title, warning) {
     waitingRegister.table_to_chat_can_edit = '#table_init_to_chat';
     waitingRegister.table_to_chat_mode = '#table_init_to_chat';
     waitingRegister.to_chat_container = '#table_init_to_chat';
+    waitingRegister.enableMapIntegration = '#table_init_to_chat';
     // 所有表格结构数据
     waitingRegister.tableStructure = '#table_init_structure';
     // 暂存数据
@@ -368,6 +369,12 @@ export const defaultSettings = await switchLanguage('__defaultSettings__', {
     separateReadLorebook: false,
     // 独立填表时，是否等待填表完成后再发送到酒馆
     wait_for_fill_then_send: false,
+    /**
+     * ===========================
+     * 插件联动设置
+     * ===========================
+     */
+    enableMapIntegration: false,
     /**
      * ===========================
      * 表格结构

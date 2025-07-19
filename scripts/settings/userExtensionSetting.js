@@ -534,6 +534,11 @@ function InitBinging() {
         triggerStepByStepNow();
     });
 
+    $('#enableMapIntegration').change(function () {
+        USER.tableBaseSetting.enableMapIntegration = this.checked;
+        USER.saveSettings && USER.saveSettings();
+        EDITOR.success(this.checked ? '已启用与地图插件的高效联动' : '已禁用与地图插件的高效联动');
+    });
 }
 
 /**
@@ -592,6 +597,7 @@ export function renderSetting() {
     updateSwitch('#alternate_switch', USER.tableBaseSetting.alternate_switch);
     updateSwitch('#show_drawer_in_extension_list', USER.tableBaseSetting.show_drawer_in_extension_list);
     updateSwitch('#table_to_chat_can_edit', USER.tableBaseSetting.table_to_chat_can_edit);
+    updateSwitch('#enableMapIntegration', USER.tableBaseSetting.enableMapIntegration);
     $('#reply_options').toggle(!USER.tableBaseSetting.step_by_step);
     $('#step_by_step_options').toggle(USER.tableBaseSetting.step_by_step);
     $('#table_to_chat_options').toggle(USER.tableBaseSetting.isTableToChat);
