@@ -13,3 +13,4 @@ jest.config.js
 package-lock.json
 package.json
 memory-bank/
+map.html

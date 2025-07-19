@@ -17,24 +17,23 @@ import {refreshRebuildTemplate} from "../settings/userExtensionSetting.js"
  */
 export function handleMapDirectIntegration() {
     // 1. 检查功能是否开启
-    if (!USER.tableBaseSetting.enableMapIntegration) {
+    if (!USER.tableBaseSetting.enableMapApiIntegration) {
         return; // 如果未启用，则直接返回
     }
 
-    console.log('[Memory Enhancement] Map direct integration is enabled. Attempting to update map.');
+    console.log('[Memory Enhancement] Map API integration is enabled. Attempting to update map.');
 
     try {
         // 2. 查找地图插件的 iframe
         const mapIframe = document.querySelector('iframe[data-plugin-id="map"]');
         if (!mapIframe) {
-            console.warn('[Memory Enhancement] Map plugin iframe not found. Skipping direct update.');
+            console.warn('[Memory Enhancement] Map plugin iframe not found. Skipping API update.');
             return;
         }
 
-        // 3. 获取最新的表格数据
-        // DERIVED.any.waitingTable 包含了当前已更新的表格数据
-        const latestTables = DERIVED.any.waitingTable;
-        if (!latestTables || latestTables.length === 0) {
+        // 3. 获取最新的表格数据，直接从最可靠的数据源 BASE.sheets 获取
+        const latestTables = BASE.sheets;
+        if (!latestTables || Object.keys(latestTables).length === 0) {
             console.log('[Memory Enhancement] No table data to push to map.');
             return;
         }
@@ -42,16 +41,15 @@ export function handleMapDirectIntegration() {
         // 4. 调用地图插件的 API
         const mapWindow = mapIframe.contentWindow;
         if (mapWindow && typeof mapWindow.MapApp?.update === 'function') {
-            // 将数据转换为地图插件需要的格式（如果需要）
-            // 根据规范，我们直接传递整个表格数据
+            // 地图的 DataProcessor 需要 sheets 对象
             mapWindow.MapApp.update(latestTables, { showSkeleton: true });
-            console.log('[Memory Enhancement] Successfully pushed data to map plugin.');
+            console.log('[Memory Enhancement] Successfully pushed data to map plugin via API.');
             EDITOR.success('地图数据已同步更新');
         } else {
             console.warn('[Memory Enhancement] Map plugin API (window.MapApp.update) not found or not a function.');
         }
     } catch (error) {
-        console.error('[Memory Enhancement] Error during map direct integration:', error);
+        console.error('[Memory Enhancement] Error during map API integration:', error);
         EDITOR.error('与地图插件联动时发生错误，请检查控制台日志。');
     }
 }
@@ -471,6 +469,7 @@ export async function rebuildTableActions(force = false, silentUpdate = USER.tab
                 const {piece} = USER.getChatPiece()
                 if (piece) {
                     convertOldTablesToNewSheets(clonedTables, piece)
+                    handleMapDirectIntegration();
                     await USER.getContext().saveChat(); // 等待保存完成
                 } else {
                     throw new Error("聊天记录为空");

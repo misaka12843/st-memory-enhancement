@@ -375,6 +375,7 @@ export const defaultSettings = await switchLanguage('__defaultSettings__', {
      * ===========================
      */
     enableMapIntegration: false,
+    enableMapApiIntegration: false, // 新增设置
     /**
      * ===========================
      * 表格结构

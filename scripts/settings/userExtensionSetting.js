@@ -539,6 +539,12 @@ function InitBinging() {
         USER.saveSettings && USER.saveSettings();
         EDITOR.success(this.checked ? '已启用与地图插件的高效联动' : '已禁用与地图插件的高效联动');
     });
+
+    $('#enableMapApiIntegration').change(function () {
+        USER.tableBaseSetting.enableMapApiIntegration = this.checked;
+        USER.saveSettings && USER.saveSettings();
+        EDITOR.success(this.checked ? '已启用/禁用地图插件API' : '已禁用/启用地图插件API');
+    });
 }
 
 /**
@@ -598,6 +604,7 @@ export function renderSetting() {
     updateSwitch('#show_drawer_in_extension_list', USER.tableBaseSetting.show_drawer_in_extension_list);
     updateSwitch('#table_to_chat_can_edit', USER.tableBaseSetting.table_to_chat_can_edit);
     updateSwitch('#enableMapIntegration', USER.tableBaseSetting.enableMapIntegration);
+    updateSwitch('#enableMapApiIntegration', USER.tableBaseSetting.enableMapApiIntegration);
     $('#reply_options').toggle(!USER.tableBaseSetting.step_by_step);
     $('#step_by_step_options').toggle(USER.tableBaseSetting.step_by_step);
     $('#table_to_chat_options').toggle(USER.tableBaseSetting.isTableToChat);
@@ -625,7 +632,8 @@ export function loadSettings() {
 
     // 3. Define a list of critical settings to verify.
     const settingsToVerify = [
-        'enableMapIntegration'
+        'enableMapIntegration',
+        'enableMapApiIntegration'
     ];
 
     let settingsModified = false;
