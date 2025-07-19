@@ -44,7 +44,7 @@ export function handleMapDirectIntegration() {
         if (mapWindow && typeof mapWindow.MapApp?.update === 'function') {
             // 将数据转换为地图插件需要的格式（如果需要）
             // 根据规范，我们直接传递整个表格数据
-            mapWindow.MapApp.update(latestTables);
+            mapWindow.MapApp.update(latestTables, { showSkeleton: true });
             console.log('[Memory Enhancement] Successfully pushed data to map plugin.');
             EDITOR.success('地图数据已同步更新');
         } else {
