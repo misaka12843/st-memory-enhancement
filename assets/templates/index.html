@@ -59,6 +59,19 @@
                                     <small class="toggle-description justifyLeft" data-i18n="Debug mode description">(开启后会有一定性能损耗，仅用于代码开发调试)</small>
                                 </div>
 
+                               <div class="wide100p padding5 dataBankAttachments">
+                                   <h2 class="marginBot5">
+                                       <span>
+                                           插件联动设置
+                                       </span>
+                                   </h2>
+                                   <div class="checkbox flex-container" style="margin-bottom: 10px;">
+                                       <input type="checkbox" id="enableMapIntegration">
+                                       <span>启用地图插件的API</span>
+                                       <small>（推荐）启用后，表格更新将直接推送数据到地图插件，避免界面刷新卡顿。请确保地图插件已安装并为最新版本。</small>
+                                   </div>
+                               </div>
+
                                 <div style="padding-left: 5px;">
                                     <label for="dataTable_message_template" data-i18n="Message template">消息模板</label>
                                     <small class="toggle-description justifyLeft" data-i18n="Message template description">(用于给AI说明怎么使用表格以及怎么修改表格，使用<code>{{tableData}}</code>宏指令来选择表格数据的插入位置)</small>
