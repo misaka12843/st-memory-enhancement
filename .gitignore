@@ -7,3 +7,9 @@ README.md~
 README.pdf
 node_modules/
 memory-bank/
+specifications/
+tests/
+jest.config.js
+.babelrc
+package-lock.json
+package.json
